@@ -35,8 +35,13 @@ export const AdminSidebar: React.FC<SidebarProps> = ({
     { icon: HelpCircle, label: 'Ayuda' },
   ];
 
+  console.log({ pathname });
+
   const isActiveRoute = (to: string) => {
     // TODO: ajustarlo cuando estemos en la pantalla de producto
+    if (pathname.includes('/admin/products/') && to === '/admin/products') {
+      return true;
+    }
 
     return pathname === to; // true, false
   };
