@@ -1,5 +1,6 @@
-import { useQuery } from '@tanstack/react-query';
+import { useMutation, useQuery } from '@tanstack/react-query';
 import { getProductByIdAction } from '../actions/get-product-by-id.action';
+import type { Product } from '@/interfaces/product.interface';
 
 export const useProduct = (id: string) => {
   const query = useQuery({
@@ -11,8 +12,15 @@ export const useProduct = (id: string) => {
   });
 
   // TODO: mutación
+  // const mutation = useMutation()
+
+  // TODO: por eliminar
+  const handleSubmitForm = async (productLike: Partial<Product>) => {
+    console.log({ productLike });
+  };
 
   return {
     ...query,
+    handleSubmitForm,
   };
 };
