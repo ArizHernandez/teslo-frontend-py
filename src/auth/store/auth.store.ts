@@ -1,10 +1,11 @@
-import { create } from 'zustand';
-import type { User } from '@/interfaces/user.interface';
+import { create } from "zustand";
+import type { User } from "@/interfaces/user.interface";
 
-import { loginAction } from '../actions/login.action';
-import { checkAuthAction } from '../actions/check-auth.action';
+import { loginAction } from "../actions/login.action";
+import { checkAuthAction } from "../actions/check-auth.action";
+import { signupAction } from "../actions/signup.action";
 
-type AuthStatus = 'authenticated' | 'not-authenticated' | 'checking';
+type AuthStatus = "authenticated" | "not-authenticated" | "checking";
 
 type AuthState = {
   // Properties
@@ -18,6 +19,11 @@ type AuthState = {
   // Actions
   login: (email: string, password: string) => Promise<boolean>;
   logout: () => void;
+  signup: (
+    email: string,
+    password: string,
+    fullName: string
+  ) => Promise<boolean>;
   checkAuthStatus: () => Promise<boolean>;
 };
 
@@ -25,12 +31,12 @@ export const useAuthStore = create<AuthState>()((set, get) => ({
   // Implementación del Store
   user: null,
   token: null,
-  authStatus: 'checking',
+  authStatus: "checking",
 
   // Getters
   isAdmin: () => {
     const roles = get().user?.roles || [];
-    return roles.includes('admin');
+    return roles.includes("admin");
     // return !!get().user?.roles.includes('admin')
   },
 
@@ -40,22 +46,38 @@ export const useAuthStore = create<AuthState>()((set, get) => ({
 
     try {
       const data = await loginAction(email, password);
-      localStorage.setItem('token', data.token);
+      localStorage.setItem("token", data.token);
 
-      set({ user: data.user, token: data.token, authStatus: 'authenticated' });
+      set({ user: data.user, token: data.token, authStatus: "authenticated" });
 
       return true;
       // eslint-disable-next-line @typescript-eslint/no-unused-vars
     } catch (error) {
-      localStorage.removeItem('token');
-      set({ user: null, token: null, authStatus: 'not-authenticated' });
+      localStorage.removeItem("token");
+      set({ user: null, token: null, authStatus: "not-authenticated" });
+      return false;
+    }
+  },
+
+  signup: async (email: string, password: string, fullName: string) => {
+    try {
+      const data = await signupAction(email, password, fullName);
+      localStorage.setItem("token", data.token);
+
+      set({ user: data.user, token: data.token, authStatus: "authenticated" });
+
+      return true;
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    } catch (error) {
+      localStorage.removeItem("token");
+      set({ user: null, token: null, authStatus: "not-authenticated" });
       return false;
     }
   },
 
   logout: () => {
-    localStorage.removeItem('token');
-    set({ user: null, token: null, authStatus: 'not-authenticated' });
+    localStorage.removeItem("token");
+    set({ user: null, token: null, authStatus: "not-authenticated" });
   },
 
   checkAuthStatus: async () => {
@@ -64,7 +86,7 @@ export const useAuthStore = create<AuthState>()((set, get) => ({
       set({
         user: user,
         token: token,
-        authStatus: 'authenticated',
+        authStatus: "authenticated",
       });
       return true;
       // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -72,7 +94,7 @@ export const useAuthStore = create<AuthState>()((set, get) => ({
       set({
         user: undefined,
         token: undefined,
-        authStatus: 'not-authenticated',
+        authStatus: "not-authenticated",
       });
 
       return false;

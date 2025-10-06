@@ -1,39 +1,41 @@
-import { useSearchParams } from 'react-router';
+import { useSearchParams } from "react-router";
 
-import { Button } from '@/components/ui/button';
-import { Separator } from '@/components/ui/separator';
-import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
-import { Label } from '@/components/ui/label';
+import { Button } from "@/components/ui/button";
+import { Separator } from "@/components/ui/separator";
+import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
+import { Label } from "@/components/ui/label";
 
 export const FilterSidebar = () => {
   const [searchParams, setSearchParams] = useSearchParams();
 
-  const currentSizes = searchParams.get('sizes')?.split(',') || []; // xs,l,xl
-  const currentPrice = searchParams.get('price') || 'any';
+  const currentSizes = searchParams.get("sizes")?.split(",") || []; // xs,l,xl
+  const currentPrice = searchParams.get("price") || "any";
 
   const handleSizeChanged = (size: string) => {
-    const newSizes = currentSizes.includes(size)
-      ? currentSizes.filter((s) => s !== size)
-      : [...currentSizes, size];
-
-    searchParams.set('page', '1');
-    searchParams.set('sizes', newSizes.join(','));
+    const newSizes = (
+      currentSizes.includes(size)
+        ? currentSizes.filter((s) => s !== size)
+        : [...currentSizes, size]
+    ).filter((s) => s.trim());
+    
+    searchParams.set("page", "1");
+    searchParams.set("sizes", newSizes.join(","));
     setSearchParams(searchParams);
   };
 
   const handlePriceChange = (price: string) => {
-    searchParams.set('page', '1');
-    searchParams.set('price', price);
+    searchParams.set("page", "1");
+    searchParams.set("price", price);
     setSearchParams(searchParams);
   };
 
   const sizes = [
-    { id: 'xs', label: 'XS' },
-    { id: 's', label: 'S' },
-    { id: 'm', label: 'M' },
-    { id: 'l', label: 'L' },
-    { id: 'xl', label: 'XL' },
-    { id: 'xxl', label: 'XXL' },
+    { id: "xs", label: "XS" },
+    { id: "s", label: "S" },
+    { id: "m", label: "M" },
+    { id: "l", label: "L" },
+    { id: "xl", label: "XL" },
+    { id: "xxl", label: "XXL" },
   ];
 
   return (
@@ -49,7 +51,7 @@ export const FilterSidebar = () => {
           {sizes.map((size) => (
             <Button
               key={size.id}
-              variant={currentSizes.includes(size.id) ? 'default' : 'outline'}
+              variant={currentSizes.includes(size.id) ? "default" : "outline"}
               size="sm"
               className="h-8"
               onClick={() => handleSizeChanged(size.id)}
@@ -70,8 +72,8 @@ export const FilterSidebar = () => {
             <RadioGroupItem
               value="any"
               id="priceAny"
-              checked={currentPrice === 'any'}
-              onClick={() => handlePriceChange('any')}
+              checked={currentPrice === "any"}
+              onClick={() => handlePriceChange("any")}
             />
             <Label htmlFor="priceAny" className="text-sm cursor-pointer">
               Cualquier precio
@@ -81,8 +83,8 @@ export const FilterSidebar = () => {
             <RadioGroupItem
               value="0-50"
               id="price1"
-              checked={currentPrice === '0-50'}
-              onClick={() => handlePriceChange('0-50')}
+              checked={currentPrice === "0-50"}
+              onClick={() => handlePriceChange("0-50")}
             />
             <Label htmlFor="price1" className="text-sm cursor-pointer">
               $0 - $50
@@ -92,8 +94,8 @@ export const FilterSidebar = () => {
             <RadioGroupItem
               value="50-100"
               id="price2"
-              checked={currentPrice === '50-100'}
-              onClick={() => handlePriceChange('50-100')}
+              checked={currentPrice === "50-100"}
+              onClick={() => handlePriceChange("50-100")}
             />
             <Label htmlFor="price2" className="text-sm cursor-pointer">
               $50 - $100
@@ -103,8 +105,8 @@ export const FilterSidebar = () => {
             <RadioGroupItem
               value="100-200"
               id="price3"
-              checked={currentPrice === '100-200'}
-              onClick={() => handlePriceChange('100-200')}
+              checked={currentPrice === "100-200"}
+              onClick={() => handlePriceChange("100-200")}
             />
             <Label htmlFor="price3" className="text-sm cursor-pointer">
               $100 - $200
@@ -114,8 +116,8 @@ export const FilterSidebar = () => {
             <RadioGroupItem
               value="200+"
               id="price4"
-              checked={currentPrice === '200+'}
-              onClick={() => handlePriceChange('200+')}
+              checked={currentPrice === "200+"}
+              onClick={() => handlePriceChange("200+")}
             />
             <Label htmlFor="price4" className="text-sm cursor-pointer">
               $200+
