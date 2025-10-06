@@ -1,12 +1,14 @@
-import { useRef, type KeyboardEvent } from 'react';
-import { Search } from 'lucide-react';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Link, useParams, useSearchParams } from 'react-router';
-import { cn } from '@/lib/utils';
-import { CustomLogo } from '@/components/custom/CustomLogo';
+import { useRef, useState, type KeyboardEvent } from "react";
+import { Search, ShoppingBag } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Link, useParams, useSearchParams } from "react-router";
+import { cn } from "@/lib/utils";
+import { CustomLogo } from "@/components/custom/CustomLogo";
 
-import { useAuthStore } from '@/auth/store/auth.store';
+import { useAuthStore } from "@/auth/store/auth.store";
+import { useCart } from "@/cart/store/cartContext";
+import CartDrawer from "@/cart/components/CartDrawer";
 
 export const CustomHeader = () => {
   const [searchParams, setSearchParams] = useSearchParams();
@@ -14,19 +16,22 @@ export const CustomHeader = () => {
 
   const { gender } = useParams();
 
+  const { totalItems } = useCart();
+  const [cartOpen, setCartOpen] = useState(false);
+
   const inputRef = useRef<HTMLInputElement>(null);
-  const query = searchParams.get('query') || '';
+  const query = searchParams.get("query") || "";
 
   const handleSearch = (event: KeyboardEvent<HTMLInputElement>) => {
-    if (event.key !== 'Enter') return;
+    if (event.key !== "Enter") return;
     const query = inputRef.current?.value;
 
     const newSearchParams = new URLSearchParams();
 
     if (!query) {
-      newSearchParams.delete('query');
+      newSearchParams.delete("query");
     } else {
-      newSearchParams.set('query', inputRef.current!.value);
+      newSearchParams.set("query", inputRef.current!.value);
     }
 
     setSearchParams(newSearchParams);
@@ -45,7 +50,7 @@ export const CustomHeader = () => {
               to="/"
               className={cn(
                 `text-sm font-medium transition-colors hover:text-primary`,
-                !gender ? 'underline underline-offset-4' : ''
+                !gender ? "underline underline-offset-4" : ""
               )}
             >
               Todos
@@ -54,7 +59,7 @@ export const CustomHeader = () => {
               to="/gender/men"
               className={cn(
                 `text-sm font-medium transition-colors hover:text-primary`,
-                gender === 'men' ? 'underline underline-offset-4' : ''
+                gender === "men" ? "underline underline-offset-4" : ""
               )}
             >
               Hombres
@@ -63,7 +68,7 @@ export const CustomHeader = () => {
               to="/gender/women"
               className={cn(
                 `text-sm font-medium transition-colors hover:text-primary`,
-                gender === 'women' ? 'underline underline-offset-4' : ''
+                gender === "women" ? "underline underline-offset-4" : ""
               )}
             >
               Mujeres
@@ -72,7 +77,7 @@ export const CustomHeader = () => {
               to="/gender/kid"
               className={cn(
                 `text-sm font-medium transition-colors hover:text-primary`,
-                gender === 'kid' ? 'underline underline-offset-4' : ''
+                gender === "kid" ? "underline underline-offset-4" : ""
               )}
             >
               Niños
@@ -98,7 +103,21 @@ export const CustomHeader = () => {
               <Search className="h-5 w-5" />
             </Button>
 
-            {authStatus === 'not-authenticated' ? (
+            <Button
+              variant="ghost"
+              size="icon"
+              className="relative"
+              onClick={() => setCartOpen(true)}
+            >
+              <ShoppingBag className="h-5 w-5" />
+              {totalItems > 0 && (
+                <span className="absolute -top-1 -right-1 h-5 w-5 rounded-full bg-primary text-primary-foreground text-xs flex items-center justify-center">
+                  {totalItems}
+                </span>
+              )}
+            </Button>
+
+            {authStatus === "not-authenticated" ? (
               <Link to="/auth/login">
                 <Button variant="default" size="sm" className="ml-2">
                   Login
@@ -130,6 +149,8 @@ export const CustomHeader = () => {
           </div>
         </div>
       </div>
+
+       <CartDrawer open={cartOpen} onOpenChange={setCartOpen} />
     </header>
   );
 };

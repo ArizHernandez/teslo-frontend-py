@@ -1,17 +1,19 @@
-import { type PropsWithChildren } from 'react';
-import { RouterProvider } from 'react-router';
-import { appRouter } from './app.router';
+import { type PropsWithChildren } from "react";
+import { RouterProvider } from "react-router";
+import { appRouter } from "./app.router";
 
 import {
   QueryClient,
   QueryClientProvider,
   useQuery,
-} from '@tanstack/react-query';
-import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
-import { Toaster } from 'sonner';
+} from "@tanstack/react-query";
+import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
+import { Toaster } from "sonner";
 
-import { CustomFullScreenLoading } from './components/custom/CustomFullScreenLoading';
-import { useAuthStore } from './auth/store/auth.store';
+import { CustomFullScreenLoading } from "./components/custom/CustomFullScreenLoading";
+import { useAuthStore } from "./auth/store/auth.store";
+import { TooltipProvider } from "./components/ui/tooltip";
+import { CartProvider } from "./cart/store/cartContext";
 
 const queryClient = new QueryClient();
 
@@ -19,7 +21,7 @@ const CheckAuthProvider = ({ children }: PropsWithChildren) => {
   const { checkAuthStatus } = useAuthStore();
 
   const { isLoading } = useQuery({
-    queryKey: ['auth'],
+    queryKey: ["auth"],
     queryFn: checkAuthStatus,
     retry: false,
     refetchInterval: 1000 * 60 * 1.5,
@@ -34,14 +36,18 @@ const CheckAuthProvider = ({ children }: PropsWithChildren) => {
 export const TesloShopApp = () => {
   return (
     <QueryClientProvider client={queryClient}>
-      <Toaster />
+      <TooltipProvider>
+        <CartProvider>
+          <Toaster />
 
-      {/* Custom Provider */}
-      <CheckAuthProvider>
-        <RouterProvider router={appRouter} />
-      </CheckAuthProvider>
+          {/* Custom Provider */}
+          <CheckAuthProvider>
+            <RouterProvider router={appRouter} />
+          </CheckAuthProvider>
 
-      <ReactQueryDevtools initialIsOpen={false} />
+          <ReactQueryDevtools initialIsOpen={false} />
+        </CartProvider>
+      </TooltipProvider>
     </QueryClientProvider>
   );
 };

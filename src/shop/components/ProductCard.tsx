@@ -1,6 +1,8 @@
-import { Button } from '@/components/ui/button';
-import { Card, CardContent } from '@/components/ui/card';
-import type { Size } from '@/interfaces/product.interface';
+import { useCart } from "@/cart/store/cartContext";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent } from "@/components/ui/card";
+import type { Gender, Size } from "@/interfaces/product.interface";
+import { toast } from "sonner";
 
 interface ProductCardProps {
   id: string;
@@ -12,12 +14,30 @@ interface ProductCardProps {
 }
 
 export const ProductCard = ({
+  id,
   name,
   price,
   image,
   category,
   sizes,
 }: ProductCardProps) => {
+  const { addItem } = useCart();
+
+  const handleAddToCart = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    addItem({
+      id,
+      title: name,
+      price,
+      images: [image],
+      gender: category as Gender,
+      description: "",
+      sizes: sizes,
+    });
+
+    toast.success(`${name} se agregó al carrito`);
+  };
+
   return (
     <Card className="group border-0 shadow-none product-card-hover cursor-pointer">
       <CardContent className="p-0">
@@ -34,7 +54,7 @@ export const ProductCard = ({
           <div className="space-y-1">
             <h3 className="font-medium text-sm tracking-tight">{name}</h3>
             <p className="text-xs text-muted-foreground uppercase">
-              {category} - <span className="font-bold">{sizes.join(', ')}</span>
+              {category} - <span className="font-bold">{sizes.join(", ")}</span>
             </p>
           </div>
 
@@ -44,6 +64,7 @@ export const ProductCard = ({
               size="sm"
               variant="outline"
               className="opacity-0 group-hover:opacity-100 transition-all duration-300 hover:bg-primary hover:text-primary-foreground border-primary/20 text-xs px-4 py-2 h-8"
+              onClick={handleAddToCart}
             >
               Agregar al carrito
             </Button>
