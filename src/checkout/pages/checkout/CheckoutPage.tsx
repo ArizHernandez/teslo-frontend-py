@@ -70,7 +70,7 @@ const Checkout = () => {
     return cleaned;
   };
 
-  const onSubmit = async (data: CheckoutFormData) => {
+  const onSubmit = async () => {
     setIsProcessing(true);
 
     // Simular procesamiento de pago
