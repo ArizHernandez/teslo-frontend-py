@@ -13,8 +13,11 @@ import { DashboardPage } from './admin/pages/dashboard/DashboardPage';
 import { AdminProductPage } from './admin/pages/product/AdminProductPage';
 import { AdminProductsPage } from './admin/pages/products/AdminProductsPage';
 
+import { CheckoutLayout } from './checkout/layouts/CheckoutLayout';
+import Checkout from './checkout/pages/checkout/CheckoutPage';
 import {
   AdminRoute,
+  AuthenticatedRoute,
   NotAuthenticatedRoute,
 } from './components/routes/ProtectedRoutes';
 
@@ -64,6 +67,21 @@ export const appRouter = createHashRouter([
         element: <RegisterPage />,
       },
     ],
+  },
+  {
+    path: '/checkout',
+    element: (
+        <AuthenticatedRoute>
+            <CheckoutLayout />
+        </AuthenticatedRoute>
+      )
+    ,
+    children: [
+      {
+        index: true,
+        element: <Checkout />
+      }
+    ]
   },
   // Admin Routes
   {

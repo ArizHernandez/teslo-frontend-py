@@ -7,6 +7,7 @@ import {
   SheetTitle,
 } from "@/components/ui/sheet";
 import { useCart } from "../store/cartContext";
+import { useNavigate } from "react-router";
 
 interface CartDrawerProps {
   open: boolean;
@@ -14,8 +15,14 @@ interface CartDrawerProps {
 }
 
 const CartDrawer = ({ open, onOpenChange }: CartDrawerProps) => {
+  const navigate = useNavigate();
   const { items, removeItem, updateQuantity, totalPrice, clearCart } =
     useCart();
+
+  const handleCheckout = () => {
+    onOpenChange(false);
+    navigate("/checkout");
+  };
 
   return (
     <Sheet open={open} onOpenChange={onOpenChange}>
@@ -102,7 +109,7 @@ const CartDrawer = ({ open, onOpenChange }: CartDrawerProps) => {
                 </div>
 
                 <div className="space-y-2">
-                  <Button className="w-full" size="lg">
+                  <Button className="w-full" size="lg" onClick={handleCheckout}>
                     Proceder al pago
                   </Button>
                   <Button
