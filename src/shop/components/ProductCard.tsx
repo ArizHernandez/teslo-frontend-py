@@ -39,7 +39,7 @@ export const ProductCard = ({
   };
 
   return (
-    <Card className="group border-0 shadow-none product-card-hover cursor-pointer">
+    <Card className="group border-0 shadow-none product-card-hover">
       <CardContent className="p-0">
         <div className="relative aspect-square overflow-hidden bg-muted rounded-lg">
           <img

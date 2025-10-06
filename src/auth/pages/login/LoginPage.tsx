@@ -1,14 +1,15 @@
-import { useState, type FormEvent } from 'react';
-import { Link, useNavigate } from 'react-router';
-import { toast } from 'sonner';
+import { useState, type FormEvent } from "react";
+import { Link, useNavigate } from "react-router";
+import { toast } from "sonner";
 
-import { Button } from '@/components/ui/button';
-import { Card, CardContent } from '@/components/ui/card';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
-import { CustomLogo } from '@/components/custom/CustomLogo';
+import { Button } from "@/components/ui/button";
+import { Card, CardContent } from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { CustomLogo } from "@/components/custom/CustomLogo";
 
-import { useAuthStore } from '@/auth/store/auth.store';
+import { useAuthStore } from "@/auth/store/auth.store";
+import { ArrowLeft } from "lucide-react";
 
 export const LoginPage = () => {
   const navigate = useNavigate();
@@ -21,25 +22,33 @@ export const LoginPage = () => {
     setIsPosting(true);
 
     const formData = new FormData(event.target as HTMLFormElement);
-    const email = formData.get('email') as string;
-    const password = formData.get('password') as string;
+    const email = formData.get("email") as string;
+    const password = formData.get("password") as string;
 
     const isValid = await login(email, password);
 
     if (isValid) {
-      navigate('/');
+      navigate("/");
       return;
     }
 
-    toast.error('Correo o/y contraseña no validos');
+    toast.error("Correo o/y contraseña no validos");
     setIsPosting(false);
   };
 
   return (
-    <div className={'flex flex-col gap-6'}>
+    <div className={"flex flex-col gap-6"}>
       <Card className="overflow-hidden p-0  ">
         <CardContent className="grid p-0 md:grid-cols-2">
-          <form className="p-6 md:p-8" onSubmit={handleLogin}>
+          <form className="px-6 md:p-8" onSubmit={handleLogin}>
+          <Button
+            variant="ghost"
+            onClick={() => navigate("/")}
+            className="mb-6"
+          >
+            <ArrowLeft className="h-4 w-4" />
+            Volver a la tienda
+          </Button>
             <div className="flex flex-col gap-6">
               <div className="flex flex-col items-center text-center">
                 <CustomLogo />
@@ -79,9 +88,9 @@ export const LoginPage = () => {
               <Button type="submit" className="w-full" disabled={isPosting}>
                 Ingresar
               </Button>
-              
+
               <div className="text-center text-sm">
-                ¿No tienes cuenta?{' '}
+                ¿No tienes cuenta?{" "}
                 <Link
                   to="/auth/register"
                   className="underline underline-offset-4"
@@ -101,8 +110,8 @@ export const LoginPage = () => {
         </CardContent>
       </Card>
       <div className="text-balance text-center text-xs text-muted-foreground [&_a]:underline [&_a]:underline-offset-4 hover:[&_a]:text-primary">
-        Haciendo click, estás de acuerdo con{' '}
-        <a href="#">términos y condiciones</a> y{' '}
+        Haciendo click, estás de acuerdo con{" "}
+        <a href="#">términos y condiciones</a> y{" "}
         <a href="#">políticas de uso</a>.
       </div>
     </div>

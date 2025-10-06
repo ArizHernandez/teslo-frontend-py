@@ -1,5 +1,12 @@
 import type { Product } from "@/interfaces/product.interface";
-import { createContext, useContext, useState, type ReactNode } from "react";
+import {
+  createContext,
+  useCallback,
+  useContext,
+  useEffect,
+  useState,
+  type ReactNode,
+} from "react";
 
 interface CartItem extends Product {
   quantity: number;
@@ -20,6 +27,17 @@ const CartContext = createContext<CartContextType | undefined>(undefined);
 export const CartProvider = ({ children }: { children: ReactNode }) => {
   const [items, setItems] = useState<CartItem[]>([]);
 
+  const storageCart = useCallback((cart: CartItem[]) => {
+    localStorage.setItem("cart", JSON.stringify(cart));
+  }, []);
+
+  const loadCart = () => {
+    const storage = localStorage.getItem("cart") ?? "[]";
+    const cart = JSON.parse(storage);
+
+    setItems(cart);
+  };
+
   const addItem = (product: Partial<Product>) => {
     setItems((currentItems) => {
       const existingItem = currentItems.find((item) => item.id === product.id);
@@ -37,9 +55,12 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
   };
 
   const removeItem = (productId: string) => {
-    setItems((currentItems) =>
-      currentItems.filter((item) => item.id !== productId)
-    );
+    setItems((currentItems) => {
+      const cartUpdated = currentItems.filter((item) => item.id !== productId);
+      storageCart(cartUpdated);
+
+      return cartUpdated;
+    });
   };
 
   const updateQuantity = (productId: string, quantity: number) => {
@@ -64,6 +85,16 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
     (sum, item) => sum + item.price * item.quantity,
     0
   );
+
+  useEffect(() => {
+    loadCart();
+  }, []);
+
+  useEffect(() => {
+    if (items.length === 0) return;
+
+    storageCart(items);
+  }, [items, storageCart]);
 
   return (
     <CartContext.Provider
